@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brandon Imperati — Cybersecurity Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy2: #0f1f3d;
+    --blue: #1d4ed8;
+    --cyan: #06b6d4;
+    --cyan2: #22d3ee;
+    --green: #10b981;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(6,182,212,0.15);
+    --card-bg: rgba(15,31,61,0.8);
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(6,182,212,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6,182,212,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 600px; height: 600px; background: rgba(29,78,216,0.15); top: -200px; right: -200px; }
+  .orb-2 { width: 400px; height: 400px; background: rgba(6,182,212,0.1); bottom: 20%; left: -100px; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  /* Sections */
+  section { position: relative; z-index: 1; }
+
+  /* Hero */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+
+  .hero-name span {
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+
+  .hero-certs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+
+  .cert-pill {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--cyan2);
+    background: rgba(6,182,212,0.05);
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .cert-pill:hover { background: rgba(6,182,212,0.12); border-color: var(--cyan); }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 1s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.8rem;
+    background: var(--blue);
+    color: white;
+    text-decoration: none;
+    border: 1px solid var(--blue);
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--cyan); border-color: var(--cyan); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.8rem;
+    background: transparent;
+    color: var(--cyan);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--cyan); background: rgba(6,182,212,0.05); }
+
+  /* Section wrapper */
+  .section-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+  }
+
+  /* Projects grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 1.5px;
+  }
+
+  .project-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--cyan), var(--blue));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover::before { transform: scaleY(1); }
+  .project-card:hover { border-color: rgba(6,182,212,0.3); }
+
+  .card-number {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(29,78,216,0.15);
+    border: 1px solid rgba(29,78,216,0.3);
+    color: #93c5fd;
+    letter-spacing: 0.05em;
+  }
+
+  .tag.green {
+    background: rgba(16,185,129,0.1);
+    border-color: rgba(16,185,129,0.3);
+    color: #6ee7b7;
+  }
+
+  .tag.cyan {
+    background: rgba(6,182,212,0.1);
+    border-color: rgba(6,182,212,0.3);
+    color: var(--cyan2);
+  }
+
+  .card-metrics {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .metric { display: flex; flex-direction: column; gap: 0.2rem; }
+  .metric-val {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .metric-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em; }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--cyan);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    transition: gap 0.2s;
+  }
+  .card-link:hover { gap: 0.8rem; }
+
+  /* Skills */
+  #skills { background: rgba(15,31,61,0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .skill-group h4 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-item {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 0.35rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .skill-item::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--cyan);
+    border-radius: 50%;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .skill-item:hover { color: var(--text); }
+
+  /* Experience */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exp-meta { padding-top: 0.2rem; }
+  .exp-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+  .exp-company {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .exp-role {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .exp-desc {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-text {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cyan); }
+
+  /* Terminal blink */
+  .blink {
+    display: inline-block;
+    width: 10px;
+    height: 1.1em;
+    background: var(--cyan);
+    vertical-align: text-bottom;
+    margin-left: 3px;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { padding: 7rem 1.5rem 3rem; }
+    .section-wrap { padding: 4rem 1.5rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">// Brandon Imperati</div>
+  <div class="nav-links">
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="mailto:imperatib@gmail.com">Contact</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-tag">$ whoami → Cybersecurity Engineer &amp; Analyst</div>
+  <h1 class="hero-name">Brandon Imperati</span><span class="blink"></span></h1>
+  <p class="hero-sub">
+    Former Military Police Leader turned Cybersecurity Engineer. Specializing in
+    SOC automation, cloud security hardening, and GRC compliance — bridging tactical
+    detection with strategic security architecture.
+  </p>
+  <div class="hero-certs">
+    <span class="cert-pill">ISC2 SSCP</span>
+    <span class="cert-pill">CompTIA CySA+</span>
+    <span class="cert-pill">CompTIA PenTest+</span>
+    <span class="cert-pill">CompTIA Security+</span>
+    <span class="cert-pill">AZ-500 Candidate</span>
+    <span class="cert-pill">CCSP Candidate</span>
+    <span class="cert-pill">DoD Aligned</span>
+  </div>
+  <div class="hero-btns">
+    <a href="#projects" class="btn-primary">View Projects →</a>
+    <a href="https://www.linkedin.com/in/brandonimperati/" class="btn-outline" target="_blank">LinkedIn ↗</a>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="section-label">// 01 — Portfolio</div>
+    <h2 class="section-title">Security Projects</h2>
+
+    <div class="projects-grid">
+
+      <!-- SOC Automation Lab -->
+      <div class="project-card">
+        <div class="card-number">PROJECT_01</div>
+        <h3 class="card-title">SOC Automation Lab</h3>
+        <p class="card-desc">
+          Production-inspired SOC automation toolkit featuring Splunk detection rules mapped
+          to MITRE ATT&CK, automated IR playbooks, and an IOC enrichment engine that queries
+          VirusTotal, AbuseIPDB, and AlienVault OTX.
+        </p>
+        <div class="card-tags">
+          <span class="tag cyan">Python</span>
+          <span class="tag cyan">Splunk SPL</span>
+          <span class="tag">MITRE ATT&CK</span>
+          <span class="tag">SOAR</span>
+          <span class="tag green">CySA+</span>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <span class="metric-val">6</span>
+            <span class="metric-label">ATT&CK TTPs</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">35%</span>
+            <span class="metric-label">Alert Fatigue ↓</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">3</span>
+            <span class="metric-label">TI Feeds</span>
+          </div>
+        </div>
+        <a href="https://github.com/Imperatib/soc-automation-lab" class="card-link" target="_blank">View on GitHub →</a>
+      </div>
+
+      <!-- Azure Security Toolkit -->
+      <div class="project-card">
+        <div class="card-number">PROJECT_02</div>
+        <h3 class="card-title">Azure Security Hardening Toolkit</h3>
+        <p class="card-desc">
+          PowerShell toolkit for auditing Azure environments against CIS Benchmark v2.0
+          and AZ-500 exam domains. Covers identity hardening, NSG auditing, storage
+          encryption, and Defender for Cloud configuration.
+        </p>
+        <div class="card-tags">
+          <span class="tag cyan">PowerShell</span>
+          <span class="tag cyan">Azure</span>
+          <span class="tag">CIS Benchmark</span>
+          <span class="tag">Zero Trust</span>
+          <span class="tag green">AZ-500 Aligned</span>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <span class="metric-val">8</span>
+            <span class="metric-label">CIS Sections</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">4</span>
+            <span class="metric-label">AZ-500 Domains</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">12</span>
+            <span class="metric-label">Audit Scripts</span>
+          </div>
+        </div>
+        <a href="https://github.com/Imperatib/azure-security-toolkit" class="card-link" target="_blank">View on GitHub →</a>
+      </div>
+
+      <!-- NIST CSF Mapper -->
+      <div class="project-card">
+        <div class="card-number">PROJECT_03</div>
+        <h3 class="card-title">NIST CSF 2.0 Compliance Mapper</h3>
+        <p class="card-desc">
+          Python GRC automation tool that maps organizational controls to NIST CSF 2.0
+          and ISO 27001:2022 via keyword analysis and manual tagging. Generates
+          audit-ready gap analysis reports and evidence checklists.
+        </p>
+        <div class="card-tags">
+          <span class="tag cyan">Python</span>
+          <span class="tag">NIST CSF 2.0</span>
+          <span class="tag">ISO 27001</span>
+          <span class="tag">GRC</span>
+          <span class="tag green">SSCP</span>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <span class="metric-val">106</span>
+            <span class="metric-label">CSF Subcats</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">2</span>
+            <span class="metric-label">Frameworks</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">Auto</span>
+            <span class="metric-label">Gap Analysis</span>
+          </div>
+        </div>
+        <a href="https://github.com/Imperatib/nist-csf-mapper" class="card-link" target="_blank">View on GitHub →</a>
+      </div>
+
+      <!-- Threat Hunting -->
+      <div class="project-card">
+        <div class="card-number">PROJECT_04</div>
+        <h3 class="card-title">Threat Hunting Playbook Library</h3>
+        <p class="card-desc">
+          Structured threat hunting playbooks with Splunk SPL and Sentinel KQL queries
+          for proactively hunting APTs, lateral movement, credential access, and C2
+          beaconing. Hypothesis-driven methodology with MITRE ATT&CK coverage.
+        </p>
+        <div class="card-tags">
+          <span class="tag cyan">Splunk SPL</span>
+          <span class="tag cyan">KQL</span>
+          <span class="tag cyan">Bash</span>
+          <span class="tag">MITRE ATT&CK</span>
+          <span class="tag green">PenTest+</span>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <span class="metric-val">5</span>
+            <span class="metric-label">Hunt Playbooks</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">10+</span>
+            <span class="metric-label">ATT&CK Techniques</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">2</span>
+            <span class="metric-label">SIEM Platforms</span>
+          </div>
+        </div>
+        <a href="https://github.com/Imperatib/threat-hunting-playbooks" class="card-link" target="_blank">View on GitHub →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <div class="section-wrap">
+    <div class="section-label">// 02 — Expertise</div>
+    <h2 class="section-title">Technical Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Security Engineering</h4>
+        <div class="skill-item">Splunk / Microsoft Sentinel</div>
+        <div class="skill-item">SOAR Automation</div>
+        <div class="skill-item">EDR / XDR Deployment</div>
+        <div class="skill-item">Firewall / IDS / IPS Tuning</div>
+        <div class="skill-item">Network Hardening</div>
+      </div>
+      <div class="skill-group">
+        <h4>Cloud Security</h4>
+        <div class="skill-item">Azure Security Center</div>
+        <div class="skill-item">Microsoft 365 Defender</div>
+        <div class="skill-item">Entra ID / PIM</div>
+        <div class="skill-item">CIS Azure Benchmark</div>
+        <div class="skill-item">Zero Trust Architecture</div>
+      </div>
+      <div class="skill-group">
+        <h4>Offensive / Defensive</h4>
+        <div class="skill-item">Threat Hunting</div>
+        <div class="skill-item">Vulnerability Mgmt (Nessus)</div>
+        <div class="skill-item">Penetration Testing</div>
+        <div class="skill-item">Kali Linux / Metasploit</div>
+        <div class="skill-item">Digital Forensics / Wireshark</div>
+      </div>
+      <div class="skill-group">
+        <h4>GRC & Scripting</h4>
+        <div class="skill-item">NIST CSF / ISO 27001</div>
+        <div class="skill-item">SOC 2 / Compliance Auditing</div>
+        <div class="skill-item">Python / PowerShell / Bash</div>
+        <div class="skill-item">Risk Assessment</div>
+        <div class="skill-item">Executive Reporting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="section-label">// 03 — Background</div>
+    <h2 class="section-title">Experience</h2>
+    <div class="exp-list">
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-date">Oct 2024 – Present</div>
+          <div class="exp-company">NET56 · Remote</div>
+        </div>
+        <div>
+          <div class="exp-role">Cybersecurity Analyst</div>
+          <p class="exp-desc">Engineered Splunk/Defender correlation rules reducing alert fatigue by 35%. Lead investigator for Tier 2/3 incidents performing deep-packet analysis and memory forensics against APTs. Developed SOAR playbooks integrating ConnectWise for automated response across 500+ endpoints.</p>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-date">Apr – Oct 2024</div>
+          <div class="exp-company">Inceptus Security · Cape Coral, FL</div>
+        </div>
+        <div>
+          <div class="exp-role">Junior SOC Analyst</div>
+          <p class="exp-desc">Managed 24/7 threat monitoring for global clients via FortSIEM and EDR toolsets. Optimized firewall and IDS configurations, achieving 20% increase in blocked malicious traffic. Drafted RCA reports translating technical breaches into business-risk impact assessments.</p>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-date">Oct 2016 – Oct 2020</div>
+          <div class="exp-company">United States Navy · Manama, BH</div>
+        </div>
+        <div>
+          <div class="exp-role">Security Element Leader · Military Police</div>
+          <p class="exp-desc">Directed 30-member high-readiness security team in forward-deployed, high-threat environments. Facilitated rigorous security audits ensuring 100% SOP compliance. Developed the discipline, mission focus, and high-stakes decision-making that defines my security practice today.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span class="footer-text">© 2025 Brandon Imperati — Fort Myers, FL</span>
+  <div class="footer-links">
+    <a href="https://github.com/Imperatib" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/brandonimperati/" target="_blank">LinkedIn</a>
+    <a href="mailto:imperatib@gmail.com">Email</a>
+  </div>
+</footer>
+
+</body>
+</html>
